@@ -7,6 +7,7 @@ import { Send, Mail, Copy, Check, Github, Linkedin, ExternalLink } from 'lucide-
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,9 +24,7 @@ export default function Contact() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
+      transition: { staggerChildren: 0.15 },
     },
   }
 
@@ -34,19 +33,14 @@ export default function Contact() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
+      transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
     },
   }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required'
-    }
+    if (!formData.name.trim()) newErrors.name = 'Name is required'
 
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required'
@@ -66,28 +60,24 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-
     if (!validateForm()) return
 
     setIsSubmitting(true)
     setSubmitStatus('idle')
 
     try {
-      // Using Formspree - Replace YOUR_FORM_ID with your actual Formspree form ID
-      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+      const subject = encodeURIComponent(`Portfolio message from ${formData.name}`)
+      const body = encodeURIComponent(
+        `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+      )
 
-      if (response.ok) {
-        setSubmitStatus('success')
-        setFormData({ name: '', email: '', message: '' })
-      } else {
-        setSubmitStatus('error')
-      }
+      // Open the user's email client with the message pre-filled
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+
+      // Show success + clear form (still useful even though email is client-side)
+      setSubmitStatus('success')
+      setFormData({ name: '', email: '', message: '' })
+      setErrors({})
     } catch {
       setSubmitStatus('error')
     } finally {
@@ -101,7 +91,6 @@ export default function Contact() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // Fallback for older browsers
       const textArea = document.createElement('textarea')
       textArea.value = email
       document.body.appendChild(textArea)
@@ -116,10 +105,7 @@ export default function Contact() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }))
-    }
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }))
   }
 
   return (
@@ -131,7 +117,6 @@ export default function Contact() {
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
         >
-          {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-12">
             <span className="text-primary-600 dark:text-primary-400 text-sm font-medium tracking-wider uppercase">
               Get in Touch
@@ -146,9 +131,7 @@ export default function Contact() {
           </motion.div>
 
           <div className="grid md:grid-cols-5 gap-8">
-            {/* Contact Info */}
             <motion.div variants={itemVariants} className="md:col-span-2 space-y-6">
-              {/* Email Card */}
               <div className="p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900/30 rounded-xl flex items-center justify-center">
@@ -172,6 +155,7 @@ export default function Contact() {
                     onClick={copyEmail}
                     className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                     title="Copy email"
+                    type="button"
                   >
                     {copied ? (
                       <Check className="w-4 h-4 text-green-500" />
@@ -182,7 +166,6 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Social Links */}
               <div className="p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                 <h3 className="font-medium text-zinc-900 dark:text-white mb-4">
                   Connect with me
@@ -219,14 +202,12 @@ export default function Contact() {
               </div>
             </motion.div>
 
-            {/* Contact Form */}
             <motion.div variants={itemVariants} className="md:col-span-3">
               <form
                 onSubmit={handleSubmit}
                 className="p-6 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800"
               >
                 <div className="space-y-5">
-                  {/* Name Field */}
                   <div>
                     <label
                       htmlFor="name"
@@ -242,17 +223,12 @@ export default function Contact() {
                       onChange={handleChange}
                       placeholder="Your name"
                       className={`w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border ${
-                        errors.name
-                          ? 'border-red-500'
-                          : 'border-zinc-200 dark:border-zinc-700'
+                        errors.name ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-700'
                       } text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none`}
                     />
-                    {errors.name && (
-                      <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                    )}
+                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
                   </div>
 
-                  {/* Email Field */}
                   <div>
                     <label
                       htmlFor="email"
@@ -268,9 +244,7 @@ export default function Contact() {
                       onChange={handleChange}
                       placeholder="your.email@example.com"
                       className={`w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border ${
-                        errors.email
-                          ? 'border-red-500'
-                          : 'border-zinc-200 dark:border-zinc-700'
+                        errors.email ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-700'
                       } text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none`}
                     />
                     {errors.email && (
@@ -278,7 +252,6 @@ export default function Contact() {
                     )}
                   </div>
 
-                  {/* Message Field */}
                   <div>
                     <label
                       htmlFor="message"
@@ -304,7 +277,6 @@ export default function Contact() {
                     )}
                   </div>
 
-                  {/* Submit Button */}
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
@@ -326,7 +298,6 @@ export default function Contact() {
                   </motion.button>
                 </div>
 
-                {/* Status Messages */}
                 <AnimatePresence>
                   {submitStatus === 'success' && (
                     <motion.div
@@ -335,7 +306,8 @@ export default function Contact() {
                       exit={{ opacity: 0, y: -10 }}
                       className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-green-700 dark:text-green-300 text-sm"
                     >
-                      Thank you! Your message has been sent successfully.
+                      Your email client should open now — if it doesn’t, you can copy my email above
+                      and message me directly.
                     </motion.div>
                   )}
 
@@ -354,7 +326,6 @@ export default function Contact() {
             </motion.div>
           </div>
 
-          {/* Toast Notification */}
           <AnimatePresence>
             {copied && (
               <motion.div
@@ -373,4 +344,3 @@ export default function Contact() {
     </section>
   )
 }
-

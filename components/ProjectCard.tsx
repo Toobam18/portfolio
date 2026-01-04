@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Github, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { Github, ChevronDown, ChevronUp } from 'lucide-react'
 import Image from 'next/image'
 import { Project } from '@/lib/projectsData'
 
@@ -31,21 +31,20 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             </span>
           </div>
         )}
-        {/* Overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
 
       {/* Project Info */}
       <div className="p-6">
-        {/* Title & Description */}
         <h3 className="text-xl font-semibold text-zinc-900 dark:text-white mb-2">
           {project.title}
         </h3>
+
         <p className="text-zinc-600 dark:text-zinc-400 text-sm mb-4">
           {project.description}
         </p>
 
-        {/* Tech Stack Badges */}
+        {/* Tech Stack */}
         <div className="flex flex-wrap gap-2 mb-4">
           {project.techStack.map((tech) => (
             <span
@@ -70,26 +69,23 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </ul>
 
-        {/* Expand/Collapse Button */}
+        {/* Expanded Details */}
         <AnimatePresence>
-          {isExpanded && (
+          {isExpanded && project.additionalDetails && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className="mb-4"
             >
-              {/* Additional Details */}
-              {project.additionalDetails && (
-                <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-                  <h4 className="text-sm font-medium text-zinc-900 dark:text-white mb-2">
-                    More Details
-                  </h4>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {project.additionalDetails}
-                  </p>
-                </div>
-              )}
+              <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                <h4 className="text-sm font-medium text-zinc-900 dark:text-white mb-2">
+                  More Details
+                </h4>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  {project.additionalDetails}
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -113,37 +109,21 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </button>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          {project.githubUrl && (
-            <motion.a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Github className="w-4 h-4" />
-              View on GitHub
-            </motion.a>
-          )}
-          {project.liveUrl && (
-            <motion.a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-xl text-sm font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <ExternalLink className="w-4 h-4" />
-              Demo
-            </motion.a>
-          )}
-        </div>
+        {/* Action Button */}
+        {project.githubUrl && (
+          <motion.a
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-xl text-sm font-medium hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <Github className="w-4 h-4" />
+            View on GitHub
+          </motion.a>
+        )}
       </div>
     </div>
   )
 }
-
