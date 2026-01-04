@@ -52,4 +52,19 @@ export const experiences: Experience[] = [
     ],
     skills: ['Organization', 'Professional Communication', 'Confidentiality', 'Scheduling'],
   },
+
+  // Example leadership entry (add later if you want)
+  // {
+  //   id: 'lead-1',
+  //   role: 'VP Events & Operations',
+  //   organization: 'Your Club Name',
+  //   date: 'Start — End',
+  //   location: 'Oshawa, ON',
+  //   type: 'leadership',
+  //   points: [
+  //     'Point 1',
+  //     'Point 2',
+  //   ],
+  //   skills: ['Leadership', 'Event Planning'],
+  // },
 ]
