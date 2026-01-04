@@ -3,10 +3,10 @@ export type Experience = {
   role: string
   organization: string
   date: string
-  location: string
-  type: 'experience'
+  location?: string
+  type: 'experience' | 'leadership'
   points: string[]
-  skills: string[]
+  skills?: string[]
 }
 
 export const experiences: Experience[] = [
