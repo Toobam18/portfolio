@@ -1,0 +1,7 @@
+Replace this file with your actual resume.pdf
+
+Steps:
+1. Delete this file (resume-placeholder.txt)
+2. Add your resume as "resume.pdf" in this same /public folder
+3. The portfolio will automatically display and allow downloads of your resume
+
