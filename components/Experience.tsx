@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Calendar, MapPin } from 'lucide-react'
-import { experiences } from '@/lib/experienceData'
+import { experiences, type Experience as ExperienceType } from '@/lib/experienceData'
 
 export default function Experience() {
   const ref = useRef(null)
@@ -57,7 +57,7 @@ export default function Experience() {
             <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-0.5 h-full bg-zinc-200 dark:bg-zinc-800" />
 
             {/* Timeline Items */}
-            {experiences.map((exp, index) => (
+            {experiences.map((exp: ExperienceType, index) => (
               <motion.div
                 key={exp.id}
                 variants={itemVariants}
@@ -90,6 +90,7 @@ export default function Experience() {
                             {exp.organization}
                           </p>
                         </div>
+
                         <span
                           className={`px-3 py-1 text-xs font-medium rounded-full ${
                             exp.type === 'leadership'
@@ -107,6 +108,7 @@ export default function Experience() {
                           <Calendar className="w-4 h-4" />
                           {exp.date}
                         </span>
+
                         {exp.location && (
                           <span className="flex items-center gap-1">
                             <MapPin className="w-4 h-4" />
@@ -115,7 +117,7 @@ export default function Experience() {
                         )}
                       </div>
 
-                      {/* Description Points */}
+                      {/* Points */}
                       <ul className="space-y-2">
                         {exp.points.map((point, i) => (
                           <li
@@ -128,8 +130,8 @@ export default function Experience() {
                         ))}
                       </ul>
 
-                      {/* Skills/Tags */}
-                      {exp.skills && (
+                      {/* Skills */}
+                      {exp.skills && exp.skills.length > 0 && (
                         <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                           {exp.skills.map((skill) => (
                             <span
@@ -152,4 +154,3 @@ export default function Experience() {
     </section>
   )
 }
-
