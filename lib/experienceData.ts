@@ -1,3 +1,14 @@
+export type Experience = {
+  id: string
+  role: string
+  organization: string
+  date: string
+  location: string
+  type: 'experience'
+  points: string[]
+  skills: string[]
+}
+
 export const experiences: Experience[] = [
   {
     id: 'exp-1',
@@ -42,4 +53,3 @@ export const experiences: Experience[] = [
     skills: ['Organization', 'Professional Communication', 'Confidentiality', 'Scheduling'],
   },
 ]
-
