@@ -8,7 +8,6 @@
   --card-bg: #ffffff;
   --card-border: #e2e8f0;
   --muted: #64748b;
-  --muted-foreground: #94a3b8;
 }
 
 .dark {
@@ -17,13 +16,7 @@
   --card-bg: #1e293b;
   --card-border: #334155;
   --muted: #94a3b8;
-  --muted-foreground: #64748b;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  color-scheme: dark;
 }
 
 html {
@@ -49,20 +42,10 @@ body {
   font-family: var(--font-script), cursive;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -84,49 +67,27 @@ body {
   color: white;
 }
 
-/* Focus outline */
+/* Focus outline: high contrast in both themes */
 *:focus-visible {
-  outline: 2px solid #475569;
+  outline: 2px solid #0369a1;
   outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Smooth transitions for theme switching */
-* {
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+.dark *:focus-visible {
+  outline-color: #7dd3fc;
 }
 
-/* Gradient text utility */
-.gradient-text {
-  background: linear-gradient(135deg, #334155 0%, #64748b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Smooth theme switching on the page background only. A global `*` transition forced
+   style recalculation on every element and cost ~1.5s of main-thread time on mobile. */
+body {
+  transition: background-color 0.3s ease;
 }
 
-.dark .gradient-text {
-  background: linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Glass effect */
-.glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.dark .glass {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Mesh gradient background - more subtle and professional */
+/* Mesh gradient background: subtle and professional */
 .mesh-gradient {
   background-color: var(--background);
-  background-image: 
+  background-image:
     radial-gradient(at 40% 20%, rgba(148, 163, 184, 0.08) 0px, transparent 50%),
     radial-gradient(at 80% 0%, rgba(100, 116, 139, 0.06) 0px, transparent 50%),
     radial-gradient(at 0% 50%, rgba(148, 163, 184, 0.06) 0px, transparent 50%),
@@ -135,21 +96,14 @@ body {
     radial-gradient(at 80% 100%, rgba(100, 116, 139, 0.08) 0px, transparent 50%);
 }
 
-/* Card hover effect */
-.card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Skip layout and paint for home page sections until they are near the viewport.
+   Each web font swap re-lays out the page, so this keeps those passes small on phones. */
+.mesh-gradient > section:not(#hero) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
 }
 
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-}
-
-.dark .card-hover:hover {
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
-}
-
-/* Hide cursor when custom cursor is active */
+/* Hide the system cursor when the custom cursor is active */
 .custom-cursor-active,
 .custom-cursor-active * {
   cursor: none !important;
@@ -165,44 +119,7 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* PDF Viewer */
-.pdf-viewer {
-  width: 100%;
-  height: 600px;
-  border: none;
-  border-radius: 1rem;
-}
-
-/* Form styles */
-input, textarea {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-input:focus, textarea:focus {
-  border-color: #475569 !important;
-  box-shadow: 0 0 0 3px rgba(71, 85, 105, 0.1);
-}
-
-/* Toast notification animation */
-@keyframes toast-slide-in {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
+  html {
+    scroll-behavior: auto;
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.toast-animate {
-  animation: toast-slide-in 0.3s ease-out;
-}
-
-/* Section divider */
-.section-divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--card-border), transparent);
 }

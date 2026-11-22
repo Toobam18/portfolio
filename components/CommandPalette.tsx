@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Search, Command, ArrowRight, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import { commands, type CommandItem } from '@/lib/commands'
 
 export default function CommandPalette() {
@@ -10,6 +12,8 @@ export default function CommandPalette() {
   const [search, setSearch] = useState('')
   const [selectedIndex, setSelectedIndex] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
+  const { resolvedTheme, setTheme } = useTheme()
 
   const filteredCommands = commands.filter(
     (cmd) =>
@@ -23,18 +27,19 @@ export default function CommandPalette() {
     setSelectedIndex(0)
 
     if (command.action) {
-      command.action()
+      command.action({ toggleTheme: () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark') })
     } else if (command.href) {
       if (command.href.startsWith('#')) {
         const element = document.getElementById(command.href.slice(1))
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' })
-        }
+        if (element) element.scrollIntoView({ behavior: 'smooth' })
+        else router.push(command.href === '#hero' ? '/' : `/${command.href}`)
+      } else if (command.href.startsWith('/')) {
+        router.push(command.href)
       } else {
-        window.open(command.href, '_blank')
+        window.open(command.href, '_blank', 'noopener,noreferrer')
       }
     }
-  }, [])
+  }, [router, resolvedTheme, setTheme])
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -111,6 +116,7 @@ export default function CommandPalette() {
               setIsOpen(false)
               setSearch('')
             }}
+            aria-hidden="true"
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100]"
           />
 
@@ -120,18 +126,22 @@ export default function CommandPalette() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-lg mx-4 z-[101]"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Command palette"
+            className="fixed top-[20%] inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-full max-w-lg z-[101]"
           >
             <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
               {/* Search Input */}
               <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
-                <Search className="w-5 h-5 text-zinc-400" />
+                <Search className="w-5 h-5 text-zinc-500" aria-hidden="true" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search commands..."
+                  aria-label="Search commands"
                   className="flex-1 bg-transparent text-zinc-900 dark:text-white placeholder-zinc-400 outline-none"
                 />
                 <button
@@ -140,8 +150,9 @@ export default function CommandPalette() {
                     setSearch('')
                   }}
                   className="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  aria-label="Close command palette"
                 >
-                  <X className="w-4 h-4 text-zinc-400" />
+                  <X className="w-4 h-4 text-zinc-500" aria-hidden="true" />
                 </button>
               </div>
 
@@ -166,7 +177,7 @@ export default function CommandPalette() {
                             : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
                         }`}
                       >
-                        <command.icon className="w-5 h-5" />
+                        <command.icon className="w-5 h-5" aria-hidden="true" />
                       </div>
                       <div className="flex-1">
                         <div className="font-medium text-zinc-900 dark:text-white">

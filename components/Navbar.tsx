@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTheme } from 'next-themes'
+import { usePathname, useRouter } from 'next/navigation'
 import { Sun, Moon, Menu, X, Command } from 'lucide-react'
 import { sections } from '@/lib/sections'
 
@@ -11,7 +12,10 @@ export default function Navbar() {
   const [activeSection, setActiveSection] = useState('hero')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
+  const pathname = usePathname()
+  const router = useRouter()
+  const isHome = pathname === '/'
 
   useEffect(() => {
     setMounted(true)
@@ -49,14 +53,15 @@ export default function Navbar() {
     })
 
     return () => observer.disconnect()
-  }, [])
+  }, [pathname])
 
   const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-      setIsMobileMenuOpen(false)
+    setIsMobileMenuOpen(false)
+    if (!isHome) {
+      router.push(id === 'hero' ? '/' : `/#${id}`)
+      return
     }
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const openCommandPalette = () => {
@@ -98,9 +103,9 @@ export default function Navbar() {
                   key={section.id}
                   onClick={() => scrollToSection(section.id)}
                   className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    activeSection === section.id
-                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                    isHome && activeSection === section.id
+                      ? 'text-primary-800 dark:text-primary-200 bg-primary-50 dark:bg-primary-900/20'
+                      : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                   }`}
                 >
                   {section.label}
@@ -116,21 +121,22 @@ export default function Navbar() {
                 className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                aria-label="Open command palette (Ctrl+K)"
               >
-                <Command className="w-4 h-4" />
+                <Command className="w-4 h-4" aria-hidden="true" />
                 <span className="text-xs">Ctrl+K</span>
               </motion.button>
 
               {/* Theme Toggle */}
               {mounted && (
                 <motion.button
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
                   className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  aria-label="Toggle theme"
+                  aria-label={resolvedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                 >
-                  {theme === 'dark' ? (
+                  {resolvedTheme === 'dark' ? (
                     <Sun className="w-5 h-5" />
                   ) : (
                     <Moon className="w-5 h-5" />
@@ -144,7 +150,8 @@ export default function Navbar() {
                 className="md:hidden p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                aria-label="Toggle menu"
+                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? (
                   <X className="w-5 h-5" />
@@ -173,8 +180,8 @@ export default function Navbar() {
                     key={section.id}
                     onClick={() => scrollToSection(section.id)}
                     className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
-                      activeSection === section.id
-                        ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
+                      isHome && activeSection === section.id
+                        ? 'text-primary-800 dark:text-primary-200 bg-primary-50 dark:bg-primary-900/20'
                         : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
                     }`}
                   >

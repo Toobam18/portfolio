@@ -2,26 +2,23 @@
 
 import { useEffect } from 'react'
 
+/** Swaps the tab title while the tab is hidden, then restores the page's own title. */
 export default function TabTitle() {
   useEffect(() => {
-    const originalTitle = 'Tooba Malik — Portfolio'
+    let savedTitle = document.title
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        savedTitle = document.title
         document.title = "Don't leave 🙏😭"
       } else {
-        document.title = originalTitle
+        document.title = savedTitle
       }
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      document.title = originalTitle
-    }
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
 
   return null
 }
-

@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
+const HOVERABLE = 'a, button, [role="button"], input, textarea, select, [data-cursor-hover]'
+
 export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
@@ -16,19 +18,11 @@ export default function CustomCursor() {
   const cursorYSpring = useSpring(cursorY, springConfig)
 
   useEffect(() => {
-    // Check for touch device and reduced motion preference
-    const isTouchDevice =
-      'ontouchstart' in window ||
-      navigator.maxTouchPoints > 0 ||
-      // @ts-expect-error - msMaxTouchPoints is IE-specific
-      navigator.msMaxTouchPoints > 0
+    // Only on devices with a precise pointer, and never for visitors who prefer reduced motion
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)'
-    ).matches
-
-    // Only enable custom cursor on non-touch devices without reduced motion
-    if (!isTouchDevice && !prefersReducedMotion) {
+    if (finePointer && !prefersReducedMotion) {
       setIsEnabled(true)
       document.body.classList.add('custom-cursor-active')
     }
@@ -46,48 +40,24 @@ export default function CustomCursor() {
       cursorY.set(e.clientY)
       setIsVisible(true)
     }
-
-    const handleMouseLeave = () => {
-      setIsVisible(false)
+    // One delegated listener instead of a listener per element, so new elements work automatically
+    const handleOver = (e: MouseEvent) => {
+      const target = e.target as Element | null
+      setIsHovering(Boolean(target?.closest?.(HOVERABLE)))
     }
+    const handleLeave = () => setIsVisible(false)
+    const handleEnter = () => setIsVisible(true)
 
-    const handleMouseEnter = () => {
-      setIsVisible(true)
-    }
-
-    // Track hoverable elements
-    const addHoverListeners = () => {
-      const hoverables = document.querySelectorAll(
-        'a, button, [role="button"], input, textarea, select, [data-cursor-hover]'
-      )
-
-      hoverables.forEach((el) => {
-        el.addEventListener('mouseenter', () => setIsHovering(true))
-        el.addEventListener('mouseleave', () => setIsHovering(false))
-      })
-    }
-
-    window.addEventListener('mousemove', moveCursor)
-    document.addEventListener('mouseleave', handleMouseLeave)
-    document.addEventListener('mouseenter', handleMouseEnter)
-
-    // Initial setup and observe for new elements
-    addHoverListeners()
-
-    const observer = new MutationObserver(() => {
-      addHoverListeners()
-    })
-
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    })
+    window.addEventListener('mousemove', moveCursor, { passive: true })
+    document.addEventListener('mouseover', handleOver, { passive: true })
+    document.addEventListener('mouseleave', handleLeave)
+    document.addEventListener('mouseenter', handleEnter)
 
     return () => {
       window.removeEventListener('mousemove', moveCursor)
-      document.removeEventListener('mouseleave', handleMouseLeave)
-      document.removeEventListener('mouseenter', handleMouseEnter)
-      observer.disconnect()
+      document.removeEventListener('mouseover', handleOver)
+      document.removeEventListener('mouseleave', handleLeave)
+      document.removeEventListener('mouseenter', handleEnter)
     }
   }, [isEnabled, cursorX, cursorY])
 
@@ -97,54 +67,29 @@ export default function CustomCursor() {
     <>
       {/* Main cursor dot */}
       <motion.div
+        aria-hidden="true"
         className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
+        style={{ x: cursorXSpring, y: cursorYSpring, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
           className="bg-white rounded-full"
-          animate={{
-            width: isHovering ? 40 : 8,
-            height: isHovering ? 40 : 8,
-            opacity: isVisible ? 1 : 0,
-          }}
-          transition={{
-            type: 'spring',
-            damping: 20,
-            stiffness: 400,
-          }}
+          animate={{ width: isHovering ? 40 : 8, height: isHovering ? 40 : 8, opacity: isVisible ? 1 : 0 }}
+          transition={{ type: 'spring', damping: 20, stiffness: 400 }}
         />
       </motion.div>
 
       {/* Outer ring */}
       <motion.div
+        aria-hidden="true"
         className="fixed top-0 left-0 pointer-events-none z-[9998]"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          translateX: '-50%',
-          translateY: '-50%',
-        }}
+        style={{ x: cursorXSpring, y: cursorYSpring, translateX: '-50%', translateY: '-50%' }}
       >
         <motion.div
           className="border-2 border-primary-500/50 rounded-full"
-          animate={{
-            width: isHovering ? 60 : 32,
-            height: isHovering ? 60 : 32,
-            opacity: isVisible ? 0.5 : 0,
-          }}
-          transition={{
-            type: 'spring',
-            damping: 15,
-            stiffness: 200,
-          }}
+          animate={{ width: isHovering ? 60 : 32, height: isHovering ? 60 : 32, opacity: isVisible ? 0.5 : 0 }}
+          transition={{ type: 'spring', damping: 15, stiffness: 200 }}
         />
       </motion.div>
     </>
   )
 }
-

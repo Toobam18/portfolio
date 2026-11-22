@@ -12,8 +12,15 @@ import {
   Sun,
   Moon,
   Download,
+  GraduationCap,
+  Layers,
   type LucideIcon,
 } from 'lucide-react'
+import { projects, projectFullName } from './projectsData'
+
+export interface CommandContext {
+  toggleTheme: () => void
+}
 
 export interface CommandItem {
   id: string
@@ -21,7 +28,7 @@ export interface CommandItem {
   description?: string
   icon: LucideIcon
   href?: string
-  action?: () => void
+  action?: (ctx: CommandContext) => void
   keywords?: string[]
 }
 
@@ -44,6 +51,14 @@ export const commands: CommandItem[] = [
     keywords: ['about', 'me', 'bio', 'introduction'],
   },
   {
+    id: 'nav-education',
+    name: 'Go to Education',
+    description: 'View my education and coursework',
+    icon: GraduationCap,
+    href: '#education',
+    keywords: ['education', 'school', 'university', 'coursework', 'degree'],
+  },
+  {
     id: 'nav-projects',
     name: 'Go to Projects',
     description: 'View my portfolio projects',
@@ -62,7 +77,7 @@ export const commands: CommandItem[] = [
   {
     id: 'nav-experience',
     name: 'Go to Experience',
-    description: 'View my experience & leadership',
+    description: 'View my experience and leadership',
     icon: Briefcase,
     href: '#experience',
     keywords: ['experience', 'work', 'leadership', 'timeline'],
@@ -103,13 +118,19 @@ export const commands: CommandItem[] = [
     name: 'Toggle Theme',
     description: 'Switch between light and dark mode',
     icon: Sun,
-    action: () => {
-      const isDark = document.documentElement.classList.contains('dark')
-      document.documentElement.classList.toggle('dark', !isDark)
-      localStorage.setItem('theme', isDark ? 'light' : 'dark')
-    },
+    action: ({ toggleTheme }) => toggleTheme(),
     keywords: ['theme', 'dark', 'light', 'mode', 'toggle'],
   },
+
+  // Case studies
+  ...projects.map<CommandItem>((p) => ({
+    id: `project-${p.id}`,
+    name: `Open ${p.title} case study`,
+    description: projectFullName(p),
+    icon: Layers,
+    href: `/projects/${p.id}`,
+    keywords: ['project', 'case study', p.title.toLowerCase(), ...p.techStack.map((t) => t.toLowerCase())],
+  })),
 
   // External Links
   {
@@ -125,7 +146,7 @@ export const commands: CommandItem[] = [
     name: 'Open LinkedIn',
     description: 'Connect on LinkedIn',
     icon: Linkedin,
-    href: 'https://www.linkedin.com/in/tooba-malik-46369825a',
+    href: 'https://www.linkedin.com/in/tooba-malik186',
     keywords: ['linkedin', 'connect', 'professional', 'network'],
   },
   {
