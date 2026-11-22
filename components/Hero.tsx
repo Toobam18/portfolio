@@ -2,180 +2,121 @@
 
 import { motion } from 'framer-motion'
 import { ArrowDown, Github, Linkedin, ExternalLink, Download, Mail } from 'lucide-react'
+import Rich from './Rich'
+import { heroStats } from '@/lib/heroStats'
+import { fadeUp } from '@/lib/motion'
+
+const socials = [
+  { href: 'https://www.linkedin.com/in/tooba-malik186', label: 'LinkedIn', icon: Linkedin },
+  { href: 'https://github.com/Toobam18', label: 'GitHub', icon: Github },
+  { href: 'https://linktr.ee/ToobaM18', label: 'Linktree', icon: ExternalLink },
+]
 
 export default function Hero() {
-  const scrollToProjects = () => {
-    const element = document.getElementById('projects')
-    if (element) element.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const scrollToContact = () => {
-    const element = document.getElementById('contact')
-    if (element) element.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  }
+  const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section
-      id="hero"
-      className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden"
-    >
+    <section id="hero" className="relative min-h-screen flex items-center justify-center px-4 pt-24 pb-20 overflow-hidden">
       {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-slate-200/50 dark:bg-slate-800/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-slate-300/40 dark:bg-slate-700/20 rounded-full blur-3xl" />
-      </div>
+      {/* Soft background glow. Radial gradients instead of large blur filters, which are slow to paint on phones */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_30%_30%,rgba(203,213,225,0.55),transparent_35%),radial-gradient(circle_at_70%_70%,rgba(203,213,225,0.45),transparent_35%)] dark:bg-[radial-gradient(circle_at_30%_30%,rgba(30,41,59,0.6),transparent_35%),radial-gradient(circle_at_70%_70%,rgba(51,65,85,0.35),transparent_35%)]"
+      />
 
       <motion.div
-        variants={containerVariants}
         initial="hidden"
         animate="visible"
+        variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } }}
         className="relative z-10 max-w-4xl mx-auto text-center"
       >
-        {/* Name */}
-        <motion.h1
-          variants={itemVariants}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-semibold mb-6 text-slate-800 dark:text-white"
-        >
-          Tooba Malik
-        </motion.h1>
-
-        {/* Role */}
+        {/* Status badge */}
         <motion.p
-          variants={itemVariants}
-          className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-4"
+          variants={fadeUp}
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800/60 dark:bg-emerald-950/50 dark:text-emerald-200 text-sm font-medium"
         >
-          Software Engineering Student at{' '}
-          <span className="font-semibold text-slate-800 dark:text-white">
-            Ontario Tech University
+          <span className="relative flex w-2 h-2" aria-hidden="true">
+            <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping" />
+            <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-500" />
           </span>
+          Open to Winter and Summer 2027 co-ops
         </motion.p>
 
-        {/* Co-op seeking */}
-        <motion.p
-          variants={itemVariants}
-          className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-2xl mx-auto"
-        >
-          Aspiring software engineer actively seeking 2026 co-op opportunities.
+        {/* Name and role render immediately (no fade) so the largest text paints right away */}
+        <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-semibold tracking-tight mb-6 text-slate-800 dark:text-white">
+          Tooba Malik
+        </h1>
+        <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 mb-4">
+          Third-Year Software Engineering Student at{' '}
+          <span className="font-semibold text-slate-800 dark:text-white">Ontario Tech University</span>
+        </p>
+
+        <motion.p variants={fadeUp} className="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto">
+          I build full-stack and AI software, and I measure what it changes.
         </motion.p>
 
         {/* CTA Buttons */}
-        <motion.div
-          variants={itemVariants}
-          className="flex flex-wrap justify-center gap-4 mb-12"
-        >
-          <motion.button
-            onClick={scrollToProjects}
-            className="group px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors flex items-center gap-2 shadow-lg shadow-slate-900/10"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+        <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-12">
+          <button
+            onClick={() => scrollTo('projects')}
+            className="group px-6 py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl font-medium hover:bg-slate-700 dark:hover:bg-slate-200 transition-colors flex items-center gap-2 shadow-lg shadow-slate-900/10"
           >
             View Projects
-            <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-          </motion.button>
-
-          <motion.a
+            <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" aria-hidden="true" />
+          </button>
+          <a
             href="/resume.pdf"
-            download
-            className="group px-6 py-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-900/5"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            download="Tooba_Malik_Resume.pdf"
+            className="px-6 py-3 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 border border-slate-200 dark:border-slate-700 shadow-lg shadow-slate-900/5"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4" aria-hidden="true" />
             Download Resume
-          </motion.a>
-
-          <motion.button
-            onClick={scrollToContact}
-            className="group px-6 py-3 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-medium hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center gap-2"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          </a>
+          <button
+            onClick={() => scrollTo('contact')}
+            className="px-6 py-3 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-medium hover:border-slate-400 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors flex items-center gap-2"
           >
-            <Mail className="w-4 h-4" />
+            <Mail className="w-4 h-4" aria-hidden="true" />
             Contact
-          </motion.button>
+          </button>
         </motion.div>
 
-        {/* Social Links */}
-        <motion.div
-          variants={itemVariants}
-          className="flex justify-center gap-4"
+        {/* Proof stats, sourced from the data files */}
+        <motion.ul
+          variants={fadeUp}
+          aria-label="Highlights"
+          className="mx-auto mb-12 max-w-3xl grid sm:grid-cols-3 rounded-2xl border border-slate-200 dark:border-slate-700/80 bg-white/70 dark:bg-slate-900/60 divide-y sm:divide-y-0 sm:divide-x divide-slate-200 dark:divide-slate-700/80"
         >
-          <motion.a
-            href="https://www.linkedin.com/in/tooba-malik-46369825a"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-xl bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-[#0077B5] border border-slate-200 dark:border-slate-700 hover:border-[#0077B5]/30 transition-all shadow-sm"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="LinkedIn"
-          >
-            <Linkedin className="w-5 h-5" />
-          </motion.a>
+          {heroStats.map((stat) => (
+            <li key={stat} className="px-5 py-4 text-[15px] text-slate-700 dark:text-slate-300 [&_strong]:text-lg">
+              <Rich text={stat} />
+            </li>
+          ))}
+        </motion.ul>
 
-          <motion.a
-            href="https://github.com/Toobam18"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-xl bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-all shadow-sm"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="GitHub"
-          >
-            <Github className="w-5 h-5" />
-          </motion.a>
-
-          <motion.a
-            href="https://linktr.ee/ToobaM18"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-xl bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-emerald-600 border border-slate-200 dark:border-slate-700 hover:border-emerald-500/30 transition-all shadow-sm"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label="Linktree"
-          >
-            <ExternalLink className="w-5 h-5" />
-          </motion.a>
+        {/* Social Links */}
+        <motion.div variants={fadeUp} className="flex justify-center gap-3">
+          {socials.map(({ href, label, icon: Icon }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${label} (opens in a new tab)`}
+              className="p-3 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors shadow-sm"
+            >
+              <Icon className="w-5 h-5" aria-hidden="true" />
+            </a>
+          ))}
         </motion.div>
       </motion.div>
 
       {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="w-6 h-10 rounded-full border-2 border-slate-300 dark:border-slate-600 flex justify-center pt-2"
-        >
-          <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" />
-        </motion.div>
-      </motion.div>
+      <div aria-hidden="true" className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden sm:block">
+        <div className="w-6 h-10 rounded-full border-2 border-slate-300 dark:border-slate-600 flex justify-center pt-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500 motion-safe:animate-bounce" />
+        </div>
+      </div>
     </section>
   )
 }

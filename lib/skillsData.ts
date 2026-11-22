@@ -1,72 +1,31 @@
-import {
-  Code2,
-  Server,
-  Database,
-  Wrench,
-  BookOpen,
-  type LucideIcon,
-} from 'lucide-react'
+import { Code2, Globe, Wrench, Layers, type LucideIcon } from 'lucide-react'
 
 interface SkillCategory {
   name: string
   icon: LucideIcon
   skills: string[]
-  bgColor: string
-  textColor: string
 }
 
+// Mirrors the "Technical Skills" section of resume.pdf. Languages stay first.
 export const skillCategories: SkillCategory[] = [
   {
-    name: 'Frontend',
+    name: 'Languages',
     icon: Code2,
-    skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Tailwind CSS'],
-    bgColor: 'bg-blue-100 dark:bg-blue-900/30',
-    textColor: 'text-blue-600 dark:text-blue-400',
+    skills: ['Python', 'Java', 'JavaScript', 'TypeScript', 'SQL', 'C++', 'PHP'],
   },
   {
-    name: 'Backend',
-    icon: Server,
-    skills: ['PHP', 'Node.js', 'Python', 'Java'],
-    bgColor: 'bg-green-100 dark:bg-green-900/30',
-    textColor: 'text-green-600 dark:text-green-400',
+    name: 'Frameworks and Libraries',
+    icon: Layers,
+    skills: ['React', 'React Native', 'Next.js', 'Node.js', 'Express', 'Flask', 'pandas', 'Chart.js', 'Tailwind CSS', 'Jest'],
   },
   {
-    name: 'Databases',
-    icon: Database,
-    skills: ['MySQL', 'MongoDB', 'SQLite'],
-    bgColor: 'bg-purple-100 dark:bg-purple-900/30',
-    textColor: 'text-purple-600 dark:text-purple-400',
+    name: 'Databases and Web',
+    icon: Globe,
+    skills: ['PostgreSQL', 'MySQL', 'Supabase', 'HTML', 'CSS', 'WordPress'],
   },
   {
-    name: 'Tools',
+    name: 'Developer Tools',
     icon: Wrench,
-    skills: ['Git', 'GitHub', 'VS Code', 'Figma', 'Postman'],
-    bgColor: 'bg-orange-100 dark:bg-orange-900/30',
-    textColor: 'text-orange-600 dark:text-orange-400',
-  },
-  {
-    name: 'Fundamentals',
-    icon: BookOpen,
-    skills: ['Data Structures', 'Algorithms', 'OOP', 'Problem Solving'],
-    bgColor: 'bg-pink-100 dark:bg-pink-900/30',
-    textColor: 'text-pink-600 dark:text-pink-400',
+    skills: ['Git', 'GitHub', 'GitHub Actions', 'VS Code', 'Figma', 'Expo', 'Vercel', 'Notion'],
   },
 ]
-
-export const currentlyLearning = [
-  'Next.js',
-  'TypeScript',
-  'Docker',
-  'Cloud Services (AWS/Vercel)',
-  'System Design',
-]
-
-export const skillChartData = [
-  { skill: 'JavaScript', level: 80 },
-  { skill: 'HTML/CSS', level: 85 },
-  { skill: 'PHP', level: 70 },
-  { skill: 'Python', level: 65 },
-  { skill: 'React', level: 60 },
-  { skill: 'MySQL', level: 70 },
-]
-

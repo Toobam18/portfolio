@@ -1,28 +1,26 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Code2, Users, Wrench } from 'lucide-react'
+import { motion, useInView } from 'framer-motion'
+import { Code2, Route, Users } from 'lucide-react'
+import SectionHeader from './SectionHeader'
+import { fadeUp, stagger } from '@/lib/motion'
 
 const highlights = [
   {
     icon: Code2,
-    title: 'Web Development',
-    description: 'Building responsive and user-friendly web applications with modern technologies.',
-    color: 'primary',
+    title: 'Full-stack web and mobile',
+    description: 'React Native and React frontends on Flask, Express and Supabase backends, with PostgreSQL underneath.',
+  },
+  {
+    icon: Route,
+    title: 'AI and algorithms',
+    description: 'Search, admissible heuristics and benchmarking, from A* campus routing to SQL views that answer planning questions.',
   },
   {
     icon: Users,
-    title: 'Team-Based Projects',
-    description: 'Collaborating with teams to deliver impactful solutions through effective communication.',
-    color: 'accent',
-  },
-  {
-    icon: Wrench,
-    title: 'Building Practical Tools',
-    description: 'Creating tools that solve real problems and improve everyday productivity.',
-    color: 'emerald',
+    title: 'Team delivery',
+    description: 'Shipping in teams of three and four with pull request reviews, shared schemas and stakeholder-tested prototypes.',
   },
 ]
 
@@ -30,126 +28,45 @@ export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
-  }
-
-  const getColorClasses = (color: string) => {
-    switch (color) {
-      case 'primary':
-        return {
-          bg: 'bg-primary-100 dark:bg-primary-900/30',
-          text: 'text-primary-600 dark:text-primary-400',
-          border: 'border-primary-200 dark:border-primary-800',
-        }
-      case 'accent':
-        return {
-          bg: 'bg-accent-100 dark:bg-accent-900/30',
-          text: 'text-accent-600 dark:text-accent-400',
-          border: 'border-accent-200 dark:border-accent-800',
-        }
-      case 'emerald':
-        return {
-          bg: 'bg-emerald-100 dark:bg-emerald-900/30',
-          text: 'text-emerald-600 dark:text-emerald-400',
-          border: 'border-emerald-200 dark:border-emerald-800',
-        }
-      default:
-        return {
-          bg: 'bg-zinc-100 dark:bg-zinc-800',
-          text: 'text-zinc-600 dark:text-zinc-400',
-          border: 'border-zinc-200 dark:border-zinc-700',
-        }
-    }
-  }
-
   return (
-    <section id="about" className="py-24 px-4">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          ref={ref}
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-        >
-          {/* Section Header */}
-          <motion.div variants={itemVariants} className="text-center mb-16">
-            <span className="text-primary-600 dark:text-primary-400 text-sm font-medium tracking-wider uppercase">
-              About Me
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-bold mt-2 text-zinc-900 dark:text-white">
-              Who I Am
-            </h2>
-            <div className="w-20 h-1 bg-gradient-to-r from-primary-500 to-accent-500 mx-auto mt-4 rounded-full" />
+    <section id="about" aria-labelledby="about-title" className="py-24 sm:py-28 px-4">
+      <div className="max-w-5xl mx-auto">
+        <motion.div ref={ref} variants={stagger} initial="hidden" animate={isInView ? 'visible' : 'hidden'}>
+          <motion.div variants={fadeUp}>
+            <SectionHeader id="about-title" eyebrow="About" title="Who I Am" />
           </motion.div>
 
-          {/* About Text */}
-          <motion.div
-            variants={itemVariants}
-            className="max-w-3xl mx-auto text-center mb-16"
-          >
+          <motion.div variants={fadeUp} className="max-w-3xl mx-auto text-center mb-14 space-y-4">
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              Hi! I&apos;m <span className="font-medium text-zinc-900 dark:text-white">Tooba</span>, 
-              a second-year Software Engineering student at Ontario Tech University with a passion 
-              for creating meaningful digital experiences. I enjoy diving into new technologies, 
-              solving challenging problems, and turning ideas into reality through code.
+              I&apos;m <span className="font-medium text-zinc-900 dark:text-white">Tooba</span>, a third-year Software
+              Engineering (Co-op) student at Ontario Tech University. I build full-stack and AI software: cross-platform
+              mobile screens as a Software Developer Intern at Meet the Motivators, a Flask and PostgreSQL maintenance
+              tracker for nuclear stations, and an A* campus navigator that finds optimal routes in milliseconds.
             </p>
-            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mt-4">
-              When I&apos;m not coding, you can find me exploring new tech trends, working on 
-              personal projects, or collaborating with fellow students on innovative solutions. 
-              I believe in continuous learning and always strive to improve my skills.
+            <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              I care about results you can measure: faster lookups, less duplicated code, fewer bugs reaching users. I also
+              tutor high school chemistry, physics and math, which taught me to explain technical ideas clearly. I&apos;m
+              looking for a Winter or Summer 2027 co-op where I can ship real features with a great team.
             </p>
           </motion.div>
 
-          {/* Highlight Cards */}
-          <motion.div
-            variants={containerVariants}
-            className="grid md:grid-cols-3 gap-6"
-          >
-            {highlights.map((item) => {
-              const colors = getColorClasses(item.color)
-              return (
-                <motion.div
-                  key={item.title}
-                  variants={itemVariants}
-                  className={`group p-6 rounded-2xl bg-white dark:bg-zinc-900 border ${colors.border} card-hover`}
-                >
-                  <div
-                    className={`w-12 h-12 rounded-xl ${colors.bg} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}
-                  >
-                    <item.icon className={`w-6 h-6 ${colors.text}`} />
-                  </div>
-                  <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
-                    {item.description}
-                  </p>
-                </motion.div>
-              )
-            })}
-          </motion.div>
+          <motion.ul variants={stagger} className="grid md:grid-cols-3 gap-5">
+            {highlights.map((item) => (
+              <motion.li
+                key={item.title}
+                variants={fadeUp}
+                className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
+              >
+                <span className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 bg-primary-50 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
+                  <item.icon className="w-5 h-5" aria-hidden="true" />
+                </span>
+                <h3 className="font-semibold text-zinc-900 dark:text-white mb-1.5">{item.title}</h3>
+                <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{item.description}</p>
+              </motion.li>
+            ))}
+          </motion.ul>
         </motion.div>
       </div>
     </section>
   )
 }
-
