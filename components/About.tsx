@@ -38,15 +38,13 @@ export default function About() {
 
           <motion.div variants={fadeUp} className="max-w-3xl mx-auto text-center mb-14 space-y-4">
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              I&apos;m <span className="font-medium text-zinc-900 dark:text-white">Tooba</span>, a third-year Software
-              Engineering (Co-op) student at Ontario Tech University. I build full-stack and AI software: cross-platform
-              mobile screens as a Software Developer Intern at Meet the Motivators, a Flask and PostgreSQL maintenance
-              tracker for nuclear stations, and an A* campus navigator that finds optimal routes in milliseconds.
+              I&apos;m <span className="font-medium text-zinc-900 dark:text-white">Tooba Malik</span>, a third-year
+              Software Engineering (Co-op) student at Ontario Tech University. I build full-stack applications and AI tools,
+              and I enjoy the whole path from understanding what users need to shipping reliable, tested software.
             </p>
             <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
-              I care about results you can measure: faster lookups, less duplicated code, fewer bugs reaching users. I also
-              tutor high school chemistry, physics and math, which taught me to explain technical ideas clearly. I&apos;m
-              looking for a Winter or Summer 2027 co-op where I can ship real features with a great team.
+              I&apos;m most interested in backend systems, databases and automation, and I&apos;m seeking a Winter or
+              Summer 2027 co-op.
             </p>
           </motion.div>
 

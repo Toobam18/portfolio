@@ -133,6 +133,7 @@ export const projects: Project[] = [
     teamSize: 1,
     category: 'Full-Stack and Automation',
     featured: true,
+    heroStat: '**57** automated tests in CI',
     techStack: ['React', 'Node.js', 'Express', 'PostgreSQL', 'Gmail API', 'OAuth 2.0', 'WebExtensions', 'd3', 'Docker', 'Jest', 'GitHub Actions'],
     keyPoints: [
       'Built a full-stack tracker with React, Node.js/Express and PostgreSQL that reads employer replies through the Gmail API with OAuth 2.0, **updating application statuses automatically**.',
