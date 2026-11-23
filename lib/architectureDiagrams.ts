@@ -170,14 +170,26 @@ export const architectureDiagrams: Record<string, Diagram[]> = {
   ],
   'coop-tracker': [
     {
-      title: 'Co-op Application Tracker architecture',
-      description: 'A React frontend calls a Node.js and Express REST API, which queries a normalized, indexed PostgreSQL database.',
-      ...threeTier(
-        { id: 'react', title: 'React frontend', lines: ['Status board', 'Search and filters'], kind: 'input' },
-        { id: 'api', title: 'Node.js + Express', lines: ['REST API', 'Request validation'], kind: 'core' },
-        { id: 'pg', title: 'PostgreSQL', lines: ['Normalized schema', 'Indexed search columns'], kind: 'store' },
-        ['JSON', 'SQL']
-      ),
+      title: 'Co-op Tracker architecture',
+      description:
+        'The browser extension and the React app call one Node.js and Express API. A scheduled job reads Gmail with read-only OAuth and moves applications forward. Everything is stored in PostgreSQL, and the Claude API is an optional reader.',
+      width: 780,
+      height: 330,
+      nodes: [
+        { id: 'ext', x: 20, y: 20, w: 210, h: 80, title: 'Browser extension', lines: ['Firefox and Chrome', 'Captures postings'], kind: 'input' },
+        { id: 'web', x: 20, y: 125, w: 210, h: 80, title: 'React app', lines: ['Dashboard, insights', 'Calendar, Ctrl+K'], kind: 'input' },
+        { id: 'gmail', x: 20, y: 230, w: 210, h: 80, title: 'Gmail API', lines: ['OAuth 2.0, read-only'], kind: 'external' },
+        { id: 'api', x: 285, y: 85, w: 210, h: 160, title: 'Node.js + Express', lines: ['21 REST endpoints', 'Email reader', 'Gmail sync every 15 min', 'CSV import and export'], kind: 'core' },
+        { id: 'pg', x: 550, y: 40, w: 210, h: 100, title: 'PostgreSQL', lines: ['applications', 'email_events, settings'], kind: 'store' },
+        { id: 'claude', x: 550, y: 200, w: 210, h: 80, title: 'Claude API', lines: ['Optional AI reader'], kind: 'external' },
+      ],
+      edges: [
+        { from: 'ext', to: 'api', fromSide: 'right', toSide: 'left', toAt: 0.2, label: 'posting' },
+        { from: 'web', to: 'api', fromSide: 'right', toSide: 'left', toAt: 0.5, label: 'JSON' },
+        { from: 'gmail', to: 'api', fromSide: 'right', toSide: 'left', toAt: 0.8, label: 'replies' },
+        { from: 'api', to: 'pg', fromSide: 'right', toSide: 'left', fromAt: 0.25, label: 'SQL' },
+        { from: 'api', to: 'claude', fromSide: 'right', toSide: 'left', fromAt: 0.8, dashed: true },
+      ],
     },
   ],
   'finance-tracker': [

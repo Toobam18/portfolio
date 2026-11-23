@@ -122,6 +122,96 @@ export const projects: Project[] = [
     heroStat: 'A* routing in **under 50 ms**',
   },
   {
+    id: 'coop-tracker',
+    title: 'Co-op Tracker',
+    subtitle: 'Self-Updating Application Tracker',
+    date: 'Nov 2026',
+    summary:
+      'An open-source app that tracks co-op applications by itself: a browser extension saves postings in one click, and a Gmail sync moves each application from Applied to Offer as employers reply.',
+    context: 'Personal project, open source',
+    role: 'Solo full-stack developer',
+    teamSize: 1,
+    category: 'Full-Stack and Automation',
+    featured: true,
+    techStack: ['React', 'Node.js', 'Express', 'PostgreSQL', 'Gmail API', 'OAuth 2.0', 'WebExtensions', 'd3', 'Docker', 'Jest', 'GitHub Actions'],
+    keyPoints: [
+      'Built a full-stack tracker with React, Node.js/Express and PostgreSQL that reads employer replies through the Gmail API with OAuth 2.0, **updating application statuses automatically**.',
+      'Developed a Firefox and Chrome extension that extracts job details from postings and co-op portal tables, **saving any posting in one click** with duplicate detection by Job ID.',
+      'Wrote 57 Jest and Supertest tests in a GitHub Actions pipeline that also builds and starts the Docker image, **catching regressions on every push**.',
+    ],
+    cover: {
+      kind: 'image',
+      image: {
+        src: '/images/projects/coop-tracker/dashboard.webp',
+        alt: 'Co-op Tracker dashboard with application counts, response and interview rates, a weekly goal ring, upcoming deadlines and interviews, a weekly applications chart and a Gmail activity feed.',
+        width: 1600,
+        height: 1000,
+      },
+    },
+    images: [
+      {
+        src: '/images/projects/coop-tracker/dashboard.webp',
+        alt: 'Co-op Tracker dashboard with stat cards, a weekly goal ring, a coming up list, a weekly applications chart and Gmail activity.',
+        width: 1600,
+        height: 1000,
+        caption: 'Dashboard: stat cards filter the table, and the Gmail feed shows what the sync changed.',
+      },
+      {
+        src: '/images/projects/coop-tracker/insights.webp',
+        alt: 'Insights page with a Sankey diagram from Applications to No reply, Ghosted, Assessment and Interview, then on to Offer or Rejected after interview, above reply rates by resume version.',
+        width: 1600,
+        height: 1000,
+        caption: 'Insights: a d3 Sankey of where every application ended up, and reply rates by resume version.',
+      },
+      {
+        src: '/images/projects/coop-tracker/detail.webp',
+        alt: 'Application detail panel for an RBC interview showing the interview time, notes, Add to Google Calendar button and an email timeline.',
+        width: 1600,
+        height: 1000,
+        caption: 'Every application has a timeline of the emails the sync matched to it.',
+      },
+      {
+        src: '/images/projects/coop-tracker/calendar-dark.webp',
+        alt: 'Calendar in dark mode with interview and deadline events for November 2026.',
+        width: 1600,
+        height: 1000,
+        caption: 'Calendar of deadlines and interviews, with Google Calendar and .ics export.',
+      },
+    ],
+    problem: [
+      'Applying for co-op means juggling dozens of postings across the school portal, LinkedIn and Indeed, then watching an inbox for assessment invites, interviews and rejections. A spreadsheet only works if you update it, and nobody does once the emails start piling up.',
+      'I wanted a tracker that keeps itself up to date: capture a posting the moment I see it, then let the replies move each application through the pipeline without any typing.',
+    ],
+    solution: [
+      'A browser extension captures postings. It reads structured JobPosting data when a site provides it, and the label tables that school co-op portals use when it does not. It uses the posting’s Job ID to tell apart portal postings that share one web address.',
+      'A background job checks Gmail every 15 minutes with read-only OAuth access, searching only for likely application updates. Each email is classified as a confirmation, assessment, interview, offer or rejection, matched to an application by normalized company name, and allowed only to move it forward. Every processed message ID is stored so nothing is handled twice.',
+      'The app is open source and runs entirely on the user’s own computer: one Docker command starts the API, the React app and PostgreSQL, and database migrations run on startup.',
+    ],
+    features: [
+      'One-click capture in Firefox and Chrome, with duplicate detection',
+      'Gmail sync with a rule-based email reader, or Claude for any wording when an API key is added',
+      'd3 Sankey diagram of outcomes, which tracks the furthest stage each application reached',
+      'Reply and interview rates by resume version and cover letter',
+      'Weekly goal ring and streak, calendar view, desktop notifications and Ctrl+K command bar',
+      'CSV import with automatic column, date and status matching, plus CSV export',
+      'Dark mode, mobile layout, and installable as a desktop app (PWA)',
+    ],
+    architecture: [
+      'Browser extension and React app call the same REST API; the extension sends the page’s structured data and label tables for extraction.',
+      'Node.js and Express serve 21 REST endpoints, the email reader and the scheduled Gmail sync, with parameterized SQL throughout.',
+      'PostgreSQL stores applications, processed emails and settings. The Claude API is optional and only used when a key is configured.',
+    ],
+    results: [
+      { value: '1 click', label: 'to save a posting' },
+      { value: '15 min', label: 'between automatic Gmail checks' },
+      { value: '57', label: 'automated tests in CI' },
+      { value: '21', label: 'REST API endpoints' },
+    ],
+    learned:
+      'Testing the extension on a real co-op portal page caught a bug no unit test would have: every posting shared one web address, so they all looked like duplicates. Matching on the posting’s Job ID fixed it. I also learned to keep status changes forward-only, because emails arrive out of order and an old confirmation should never undo an interview.',
+    githubUrl: 'https://github.com/Toobam18/coop-tracker',
+  },
+  {
     id: 'nuclearops',
     title: 'NuclearOps',
     subtitle: 'Maintenance and Outage Tracker',
@@ -218,58 +308,6 @@ export const projects: Project[] = [
       'Designing the schema and views before writing any Flask code made the app itself almost straightforward, because each page became a thin layer over a view or table. Keeping every query parameterized and every role check in one decorator also made security reviews quick for a team of four.',
     heroStat: '**21-endpoint** Flask API',
     githubUrl: 'https://github.com/c-pavi/nuclearops',
-  },
-  {
-    id: 'coop-tracker',
-    title: 'Co-op Application Tracker',
-    subtitle: 'Full-stack application pipeline',
-    date: 'Dec 2026',
-    summary:
-      'A full-stack app for tracking co-op applications, deadlines and statuses, built to replace a messy spreadsheet.',
-    context: 'Personal project',
-    role: 'Solo full-stack developer',
-    teamSize: 1,
-    category: 'Full-Stack Web',
-    featured: false,
-    techStack: ['React', 'Node.js', 'Express', 'PostgreSQL'],
-    keyPoints: [
-      'Built a full-stack tracker with a React frontend and Node.js/Express REST API to manage applications across every stage, **cutting status-check time by 70%** compared to spreadsheets.',
-      'Designed a normalized PostgreSQL schema with indexed queries, **keeping search and filter responses under 100 ms across 500+ records**.',
-    ],
-    // TODO: replace with real screenshot once the app's UI is final
-    cover: {
-      kind: 'illustration',
-      illustration: 'coop-tracker',
-      alt: 'Illustration of a status board with application cards grouped into Applied, Interview and Offer columns.',
-    },
-    // TODO: add real screenshots here (save them as .webp in public/images/projects/coop-tracker/)
-    images: [],
-    problem: [
-      'Applying for co-op means tracking dozens of postings at once, each with its own deadline, documents and interview stage. A spreadsheet works for the first ten applications, then it becomes hard to see what needs attention today.',
-    ],
-    solution: [
-      'I built a tracker with a React frontend and a Node.js and Express REST API backed by PostgreSQL. Each application moves through stages, and the board shows at a glance what is waiting on me and what is waiting on the employer.',
-      'The schema is normalized so companies, postings and status changes are stored once, and the columns used for search and filtering are indexed so the board stays fast as the list grows.',
-    ],
-    features: [
-      'Applications grouped by stage, from saved to offer',
-      'Deadlines and status history for every application',
-      'Search and filters by company, stage and date',
-      'REST API built with Node.js and Express',
-    ],
-    architecture: [
-      'React frontend that calls the API and renders the status board.',
-      'Node.js and Express REST API that validates requests and runs the queries.',
-      'PostgreSQL with a normalized schema and indexes on the search and filter columns.',
-    ],
-    results: [
-      { value: '70%', label: 'less time spent checking statuses' },
-      { value: '<100 ms', label: 'search and filter responses' },
-      { value: '500+', label: 'records handled' },
-    ],
-    learned:
-      'Building a tool I use every day made the priorities obvious: fast search mattered more than extra features. Adding indexes after measuring slow queries taught me to profile before optimizing.',
-    // TODO: add githubUrl once the repository is public
   },
   {
     id: 'finance-tracker',
